@@ -21,6 +21,7 @@ func addTaskHandle(w http.ResponseWriter, r *http.Request) {
 
 	// Проверка обязательного поля title
 	if newTask.Title == "" {
+		log.Printf("Не указан заголовок задачи: %v", err)
 		http.Error(w, jsonError("Не указан заголовок задачи"), http.StatusBadRequest)
 		return
 	}
@@ -31,6 +32,7 @@ func addTaskHandle(w http.ResponseWriter, r *http.Request) {
 	} else {
 		_, err = time.Parse("20060102", newTask.Date)
 		if err != nil {
+			log.Printf("Дата представлена в неправильном формате: %v", err)
 			http.Error(w, jsonError("Дата представлена в неправильном формате"), http.StatusBadRequest)
 			return
 		}
@@ -48,6 +50,7 @@ func addTaskHandle(w http.ResponseWriter, r *http.Request) {
 				nextDate, err := NextDate(currentDate, newTask.Date, newTask.Repeat)
 				newTask.Date = nextDate
 				if err != nil {
+					log.Printf("Неправильный формат правила повторения: %v", err)
 					http.Error(w, jsonError("Неправильный формат правила повторения"), http.StatusBadRequest)
 					return
 				}
@@ -63,6 +66,7 @@ func addTaskHandle(w http.ResponseWriter, r *http.Request) {
 	// Сохранение задачи в БД
 	id, err := db.AddTask(&newTask)
 	if err != nil {
+		log.Printf("Ошибка при добавлении задачи: %v", err)
 		http.Error(w, jsonError("Ошибка при добавлении задачи"), http.StatusInternalServerError)
 		return
 	}

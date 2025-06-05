@@ -7,7 +7,9 @@ import (
 )
 
 func main() {
+
 	db.Init("scheduler.db")
+
 	fmt.Println("Start server!")
 	server.Run() //http.ListenAndServe(":7541", nil)
 

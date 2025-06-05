@@ -70,7 +70,10 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 		getTaskHandle(w, r)
 	case http.MethodDelete:
 		deleteTaskHandle(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
+
 }
 
 func tasksListHandler(w http.ResponseWriter, r *http.Request) {
@@ -78,6 +81,8 @@ func tasksListHandler(w http.ResponseWriter, r *http.Request) {
 	// обработка других методов будет добавлена на следующих шагах
 	case http.MethodGet:
 		tasksHandler(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
 	}
 }
 

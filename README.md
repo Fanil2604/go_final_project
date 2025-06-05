@@ -88,7 +88,7 @@ API будет следующие операции:
 
 
 
-По умолчанию выбран порт `7541`, если нужно изменить порт, то необходимо присвоить переменной `TODO_PORT` нужный порт.
+По умолчанию выбран порт `7541`.
 
 Файл с базой данной по умолчанию хранится по пути `/db/scheduler.db`. Для изменения пути необходимо присвоить его переменной окружения `TODO_DBFILE`.
 
@@ -104,11 +104,7 @@ API будет следующие операции:
 `- export TODO_PASSWORD=pass2221`
 
 ## Стек:
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg" 
-title="golang" width="50" height="50"/>&nbsp;
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg"          
-  title="docker" width="50" height="50"/>&nbsp;
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg"          
-  title="sqlite" width="50" height="50"/>&nbsp;
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg"          
-    title="git" width="40" height="40"/>&nbsp;
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original.svg" title="golang" width="50" height="50"/>&nbsp;
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" title="docker" width="50" height="50"/>&nbsp;
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg" title="sqlite" width="50" height="50"/>&nbsp;
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" title="git" width="40" height="40"/>&nbsp;

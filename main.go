@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
+	"go_final_project/pkg/db"
 	"go_final_project/pkg/server"
 	"net/http"
 )
 
 func main() {
 	fmt.Println("Start server!")
+	db.Init("scheduler.db")
+	defer db.DB.Close()
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 	server.Run()
 	err := http.ListenAndServe(":7541", nil)

@@ -29,6 +29,7 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if pass.Password == "" {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "need to enter a password"})
 			return
 		}
@@ -36,8 +37,8 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 		if pass.Password == storedPasword {
 			token, err := GetToken(pass.Password)
 			if err != nil {
-				json.NewEncoder(w).Encode(map[string]string{"error": string(err.Error())})
 				http.Error(w, "Unauthorized", http.StatusUnauthorized)
+				json.NewEncoder(w).Encode(map[string]string{"error": string(err.Error())})
 				return
 			}
 
@@ -45,8 +46,8 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if pass.Password != storedPasword {
-			json.NewEncoder(w).Encode(map[string]string{"error": "incorrect password"})
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(map[string]string{"error": "incorrect password"})
 			return
 		}
 	}

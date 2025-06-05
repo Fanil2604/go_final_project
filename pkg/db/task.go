@@ -17,17 +17,9 @@ type Task struct {
 }
 
 func AddTask(task *Task) (int64, error) {
-	var db *sql.DB
-	var err error
-	db, err = sql.Open("sqlite", "scheduler.db")
-	defer db.Close()
-	if err != nil {
-		fmt.Println(err)
-		return 0, err
-	}
 	var id int64
 	// определите запрос
-	res, err := db.Exec("INSERT INTO scheduler (date, title, comment, repeat) VALUES (?, ?, ?, ?)", task.Date, task.Title, task.Comment, task.Repeat)
+	res, err := DB.Exec("INSERT INTO scheduler (date, title, comment, repeat) VALUES (?, ?, ?, ?)", task.Date, task.Title, task.Comment, task.Repeat)
 	if err != nil {
 		log.Printf("Ошибка выполнения запроса: %v", err)
 		return 0, err
@@ -40,16 +32,7 @@ func AddTask(task *Task) (int64, error) {
 }
 
 func Tasks(limit int) ([]*Task, error) {
-	var db *sql.DB
-	var err error
-	db, err = sql.Open("sqlite", "scheduler.db")
-	defer db.Close()
-	if err != nil {
-		fmt.Println(err)
-		return []*Task{}, err
-	}
-
-	rows, err := db.Query(
+	rows, err := DB.Query(
 		`SELECT * 
 		 FROM scheduler
 		 ORDER BY date ASC
@@ -86,17 +69,8 @@ func Tasks(limit int) ([]*Task, error) {
 }
 
 func GetTask(id string) (*Task, error) {
-	var db *sql.DB
-	var err error
-	db, err = sql.Open("sqlite", "scheduler.db")
-	defer db.Close()
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-
 	task := &Task{}
-	err = db.QueryRow(
+	err := DB.QueryRow(
 		"SELECT id, date, title, comment, repeat FROM scheduler WHERE id = ?",
 		id,
 	).Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
@@ -109,17 +83,8 @@ func GetTask(id string) (*Task, error) {
 }
 
 func DeleteTask(id string) error {
-	var db *sql.DB
-	var err error
-	db, err = sql.Open("sqlite", "scheduler.db")
-	defer db.Close()
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
 	task := &Task{}
-	err = db.QueryRow(
+	err := DB.QueryRow(
 		"SELECT id, date, title, comment, repeat FROM scheduler WHERE id = ?",
 		id,
 	).Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
@@ -128,7 +93,7 @@ func DeleteTask(id string) error {
 		return err
 	}
 
-	_, err = db.Exec(
+	_, err = DB.Exec(
 		`DELETE
 		FROM scheduler
 		WHERE id = :id`,
@@ -139,13 +104,8 @@ func DeleteTask(id string) error {
 }
 
 func UpdateTask(task *Task) error {
-	var db *sql.DB
-	var err error
-	db, err = sql.Open("sqlite", "scheduler.db")
-	defer db.Close()
-
 	// параметры пропущены, не забудьте указать WHERE
-	res, err := db.Exec(
+	res, err := DB.Exec(
 		`UPDATE scheduler 
 		SET date=:date, title= :title, comment= :comment, repeat= :repeat
 		WHERE id= :id`,

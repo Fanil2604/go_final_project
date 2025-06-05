@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"go_final_project/pkg/db"
 	"log"
 	"net/http"
@@ -17,7 +16,8 @@ type TasksResp struct {
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
 	tasks, err := db.Tasks(50) // в параметре максимальное количество записей
 	if err != nil {
-		fmt.Println(err)
+		log.Println("get tasks error", err)
+		http.Error(w, `{"error":"get tasks error"}`, http.StatusInternalServerError)
 		return
 	}
 
@@ -34,14 +34,14 @@ func getTaskHandle(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	if id == "" {
-		//fmt.Println("не указан идентификатор")
-		//writeERROR(w, "not id", http.StatusInternalServerError)
+		http.Error(w, jsonError("Задача не найдена"), http.StatusBadRequest)
 		writeJson(w, map[string]string{"error": "Задача не найдена"})
 		return
 	}
 
 	task, err := db.GetTask(id) // в параметре максимальное количество записей
 	if err != nil {
+		http.Error(w, jsonError("Задача не найдена"), http.StatusNotFound)
 		writeJson(w, map[string]string{"error": "Задача не найдена"})
 		return
 	}
@@ -54,12 +54,14 @@ func taskDoneHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err := strconv.Atoi(id)
 	if err != nil {
+		http.Error(w, jsonError("id is not a number"), http.StatusBadRequest)
 		writeJson(w, map[string]string{"error": "id is not a number"})
 		return
 	}
 
 	t, err := db.GetTask(id)
 	if err != nil {
+		http.Error(w, jsonError("can't get task"), http.StatusNotFound)
 		writeJson(w, map[string]string{"error": "can't get task"})
 		return
 	}
@@ -68,6 +70,7 @@ func taskDoneHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Repeat is empty, task will delete")
 		err = db.DeleteTask(id)
 		if err != nil {
+			http.Error(w, jsonError("can't delete task"), http.StatusInternalServerError)
 			writeJson(w, map[string]string{"error": "can't delete task"})
 			return
 		}
@@ -76,12 +79,14 @@ func taskDoneHandler(w http.ResponseWriter, r *http.Request) {
 	if t.Repeat != "" {
 		t.Date, err = NextDate(time.Now(), t.Date, t.Repeat)
 		if err != nil {
+			http.Error(w, jsonError(string(err.Error())), http.StatusInternalServerError)
 			writeJson(w, map[string]string{"error": string(err.Error())})
 			return
 		}
 
 		err = db.UpdateTask(t)
 		if err != nil {
+			http.Error(w, jsonError(string(err.Error())), http.StatusInternalServerError)
 			writeJson(w, map[string]string{"error": string(err.Error())})
 			return
 		}
@@ -172,14 +177,14 @@ func deleteTaskHandle(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
 	if id == "" {
-		//fmt.Println("не указан идентификатор")
-		//writeERROR(w, "not id", http.StatusInternalServerError)
+		http.Error(w, jsonError("Задача не найдена"), http.StatusBadRequest)
 		writeJson(w, map[string]string{"error": "Задача не найдена"})
 		return
 	}
 
 	err := db.DeleteTask(id) // в параметре максимальное количество записей
 	if err != nil {
+		http.Error(w, jsonError("Задача не найдена"), http.StatusInternalServerError)
 		writeJson(w, map[string]string{"error": "Задача не найдена"})
 		return
 	}

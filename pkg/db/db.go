@@ -8,9 +8,15 @@ import (
 	_ "modernc.org/sqlite"
 )
 
+var DB *sql.DB
+
 func Init(dbFile string) error {
-	var db *sql.DB
 	var err error
+	DB, err = sql.Open("sqlite", dbFile)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
 	const schema string = `
 CREATE TABLE IF NOT EXISTS scheduler (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,12 +36,8 @@ CREATE TABLE IF NOT EXISTS scheduler (
 		f.Close()
 
 	}
-	db, err = sql.Open("sqlite", dbFile)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	_, err = db.Exec(schema)
+
+	_, err = DB.Exec(schema)
 	if err != nil {
 		return err
 	}
